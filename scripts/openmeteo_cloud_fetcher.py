@@ -18,7 +18,7 @@ def chunked(seq, size):
     yield seq[i:i + size]
 
 
-def fetch_batch(points: List[Tuple[float, float]], *, max_attempts: int = 5, base_sleep: float = 0.5):
+def fetch_batch(points: List[Tuple[float, float]], *, max_attempts: int = 6, base_sleep: float = 1.0):
   latitudes = ",".join(f"{p[0]:.2f}" for p in points)
   longitudes = ",".join(f"{p[1]:.2f}" for p in points)
   params = {
@@ -31,7 +31,13 @@ def fetch_batch(points: List[Tuple[float, float]], *, max_attempts: int = 5, bas
   for attempt in range(max_attempts):
     resp = requests.get(API, params=params, timeout=40)
     if resp.status_code == 429:
+      retry_after = resp.headers.get("Retry-After")
       sleep_for = base_sleep * (2**attempt)
+      if retry_after:
+        try:
+          sleep_for = max(sleep_for, float(retry_after))
+        except ValueError:
+          pass
       time.sleep(sleep_for)
       last_error = RuntimeError("Open-Meteo rate limit encountered")
       continue
@@ -77,13 +83,13 @@ def build_grid(step):
   lat_lookup = {v: i for i, v in enumerate(lats)}
   lon_lookup = {v: i for i, v in enumerate(lons)}
 
-  for batch in chunked([(lat, lon) for lat in lats for lon in lons], 6):
+  for batch in chunked([(lat, lon) for lat in lats for lon in lons], 4):
     results = fetch_batch(batch)
     for (lat, lon), val in zip(batch, results):
       j = lat_lookup[lat]
       i = lon_lookup[lon]
       values[j * nx + i] = float(val) if val is not None else 0.0
-    time.sleep(0.25)
+    time.sleep(0.5)
 
   rows = [values[j * nx:(j + 1) * nx] for j in range(ny)]
   values_north_first = [v for row in reversed(rows) for v in row]

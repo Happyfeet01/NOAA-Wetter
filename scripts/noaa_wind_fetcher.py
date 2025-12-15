@@ -19,7 +19,8 @@ def latest_herbie_run(max_back=6):
 
   for step in range(max_back):
     run_time = start - dt.timedelta(hours=6 * step)
-    h = Herbie(run_time, model="gfs", product="pgrb2.1p00", fxx=0)
+    run_time_naive = run_time.replace(tzinfo=None)
+    h = Herbie(run_time_naive, model="gfs", product="pgrb2.1p00", fxx=0)
     try:
       validate_head(str(h.grib))
       return h
