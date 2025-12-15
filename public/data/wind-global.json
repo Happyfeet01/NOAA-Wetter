@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "generated": "2024-01-01T00:00:00Z",
+    "source": "Sample GFS subset",
+    "refTime": "2024-01-01T00:00:00Z",
+    "bounds": {"west": -180, "east": 180, "south": -90, "north": 90},
+    "grid": {"nx": 5, "ny": 5, "dx": 1, "dy": 1},
+    "stats": {"maxVelocity": 20, "avgVelocity": 5}
+  },
+  "data": [
+    {
+      "header": {
+        "parameterCategory": 2,
+        "parameterNumber": 2,
+        "refTime": "2024-01-01T00:00:00Z",
+        "lo1": -2,
+        "la1": 2,
+        "dx": 1,
+        "dy": 1,
+        "nx": 5,
+        "ny": 5,
+        "parameterUnit": "m/s",
+        "scanMode": 0
+      },
+      "data": [1, 2, 3, 4, 5, 1, 1, 2, 2, 3, 0, 0, 1, 1, 1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0]
+    },
+    {
+      "header": {
+        "parameterCategory": 2,
+        "parameterNumber": 3,
+        "refTime": "2024-01-01T00:00:00Z",
+        "lo1": -2,
+        "la1": 2,
+        "dx": 1,
+        "dy": 1,
+        "nx": 5,
+        "ny": 5,
+        "parameterUnit": "m/s",
+        "scanMode": 0
+      },
+      "data": [0, 0, 0, 0, 0, 1, 1, 2, 2, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, -1, -1, -2, -2, -3]
+    }
+  ]
+}
