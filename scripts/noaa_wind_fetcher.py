@@ -12,7 +12,7 @@ from herbie import Herbie
 
 
 def latest_herbie_run(max_back=6):
-  now = dt.datetime.utcnow().replace(minute=0, second=0, microsecond=0)
+  now = dt.datetime.now(dt.UTC).replace(minute=0, second=0, microsecond=0)
   base_hour = now.hour - (now.hour % 6)
   start = now.replace(hour=base_hour)
   last_error = None
@@ -21,7 +21,7 @@ def latest_herbie_run(max_back=6):
     run_time = start - dt.timedelta(hours=6 * step)
     h = Herbie(run_time, model="gfs", product="pgrb2.1p00", fxx=0)
     try:
-      validate_head(h.urlpath)
+      validate_head(str(h.grib))
       return h
     except Exception as exc:  # noqa: BLE001 - bubble up last error
       last_error = exc
@@ -108,7 +108,7 @@ def main():
 
   payload = {
     "meta": {
-      "generated": dt.datetime.utcnow().isoformat() + "Z",
+      "generated": dt.datetime.now(dt.UTC).isoformat().replace("+00:00", "Z"),
       "source": "NOAA GFS 1.0deg",
       "refTime": u["header"]["refTime"],
       "bounds": {"west": -180, "east": 180, "south": -85, "north": 85},
