@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Open-Meteo cloud fetcher hourly
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=600
+Persistent=true
+Unit=openmeteo-cloud-fetch.service
+
+[Install]
+WantedBy=timers.target

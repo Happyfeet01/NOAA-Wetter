@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NOAA Wetter</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-sA+rqkzG4Q7x2FZp+GCGN9JBrJH0gLZy09Sp0hXvPr4="
+      crossorigin=""
+    />
+  </head>
+  <body>
+    <div id="app">
+      <div id="map"></div>
+      <div id="sidebar"></div>
+      <div id="info-box" class="floating"></div>
+      <div id="controls" class="control-panel">
+        <div class="control-group">
+          <label for="radar-slider">Radar</label>
+          <input type="range" id="radar-slider" min="0" max="1" step="0.05" value="0.7" />
+        </div>
+        <div class="control-group">
+          <label for="cloud-slider">Wolken</label>
+          <input type="range" id="cloud-slider" min="0" max="1" step="0.05" value="0.6" />
+        </div>
+        <div class="control-group">
+          <label for="wind-slider">Wind</label>
+          <input type="range" id="wind-slider" min="0" max="1" step="0.05" value="0.8" />
+        </div>
+        <div class="control-group">
+          <label for="warn-slider">Warnungen</label>
+          <input type="range" id="warn-slider" min="0" max="1" step="0.05" value="0.8" />
+        </div>
+        <button id="locate-btn" type="button">Standort</button>
+      </div>
+      <div id="warning-banner" role="status" aria-live="polite"></div>
+      <div id="debug"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
