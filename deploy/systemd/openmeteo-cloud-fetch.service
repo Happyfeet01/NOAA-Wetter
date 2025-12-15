@@ -1,0 +1,14 @@
+[Unit]
+Description=Fetch Open-Meteo cloud grid JSON
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=www-data
+WorkingDirectory=/var/www/noaa-wetter
+ExecStart=/usr/bin/env python3 scripts/openmeteo_cloud_fetcher.py --out public/data/clouds.json
+Nice=10
+
+[Install]
+WantedBy=multi-user.target
