@@ -1,0 +1,11 @@
+[Unit]
+Description=Run NOAA wind fetcher every 6 hours
+
+[Timer]
+OnCalendar=*-*-* *:00/6:00
+RandomizedDelaySec=600
+Persistent=true
+Unit=noaa-wind-fetch.service
+
+[Install]
+WantedBy=timers.target

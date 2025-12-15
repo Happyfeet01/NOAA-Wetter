@@ -1,0 +1,14 @@
+[Unit]
+Description=Fetch NOAA GFS wind JSON for Leaflet velocity
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=www-data
+WorkingDirectory=/var/www/noaa-wetter
+ExecStart=/usr/bin/env python3 scripts/noaa_wind_fetcher.py --out public/data/wind-global.json
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

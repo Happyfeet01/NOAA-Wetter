@@ -1,0 +1,22 @@
+{
+  "name": "noaa-wetter",
+  "version": "1.0.0",
+  "description": "Leaflet-based weather radar demo with NOAA wind and Open-Meteo clouds",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.11.11",
+    "leaflet": "^1.9.4",
+    "leaflet-velocity": "^1.1.0",
+    "lodash.debounce": "^4.0.8"
+  },
+  "devDependencies": {
+    "vite": "^5.3.4"
+  }
+}
