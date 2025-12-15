@@ -11,8 +11,23 @@ import requests
 from herbie import Herbie
 
 
-def latest_herbie_run():
-  return Herbie.latest(model="gfs", product="pgrb2.1p00", fxx=0, n=1)
+def latest_herbie_run(max_back=6):
+  now = dt.datetime.utcnow().replace(minute=0, second=0, microsecond=0)
+  base_hour = now.hour - (now.hour % 6)
+  start = now.replace(hour=base_hour)
+  last_error = None
+
+  for step in range(max_back):
+    run_time = start - dt.timedelta(hours=6 * step)
+    h = Herbie(run_time, model="gfs", product="pgrb2.1p00", fxx=0)
+    try:
+      validate_head(h.urlpath)
+      return h
+    except Exception as exc:  # noqa: BLE001 - bubble up last error
+      last_error = exc
+      continue
+
+  raise RuntimeError(f"No recent GFS run found ({max_back} cycles checked): {last_error}")
 
 
 def validate_head(url: str):
@@ -83,7 +98,6 @@ def main():
   args = parser.parse_args()
 
   h = latest_herbie_run()
-  validate_head(h.urlpath)
   ds = h.xarray(var=["UGRD:10 m above ground", "VGRD:10 m above ground"], remove_grib=False)
 
   u_var = [k for k in ds.data_vars if "UGRD" in k][0]

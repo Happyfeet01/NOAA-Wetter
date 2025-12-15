@@ -33,12 +33,23 @@ def fetch_batch(points: List[Tuple[float, float]]):
   if "application/json" not in ctype:
     raise RuntimeError(f"Cloud API content-type {ctype}")
   payload = resp.json()
-  currents = payload.get("current") or payload.get("current_weather")
-  if isinstance(currents, dict) and "cloud_cover" in currents:
-    return [currents["cloud_cover"]] * len(points)
-  if isinstance(currents, list):
-    return [c.get("cloud_cover") for c in currents]
-  raise RuntimeError("Unexpected Open-Meteo response shape")
+
+  datasets = payload if isinstance(payload, list) else [payload]
+  results = []
+  for item in datasets:
+    currents = item.get("current") or item.get("current_weather")
+    if isinstance(currents, dict) and "cloud_cover" in currents:
+      results.append(currents.get("cloud_cover"))
+    elif isinstance(currents, list):
+      results.extend(c.get("cloud_cover") for c in currents)
+    else:
+      results.append(None)
+
+  if len(results) == 1 and len(points) > 1:
+    results = results * len(points)
+  if len(results) != len(points):
+    raise RuntimeError(f"Unexpected Open-Meteo response shape (got {len(results)} values for {len(points)} points)")
+  return results
 
 
 def build_grid(step):
@@ -47,12 +58,14 @@ def build_grid(step):
   nx = len(lons)
   ny = len(lats)
   values = [0.0] * (nx * ny)
+  lat_lookup = {v: i for i, v in enumerate(lats)}
+  lon_lookup = {v: i for i, v in enumerate(lons)}
 
   for batch in chunked([(lat, lon) for lat in lats for lon in lons], 8):
     results = fetch_batch(batch)
     for (lat, lon), val in zip(batch, results):
-      j = lats.index(lat)
-      i = lons.index(lon)
+      j = lat_lookup[lat]
+      i = lon_lookup[lon]
       values[j * nx + i] = float(val) if val is not None else 0.0
     time.sleep(0.1)
 
