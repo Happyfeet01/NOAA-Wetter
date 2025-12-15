@@ -69,15 +69,22 @@ def build_grid(step):
       values[j * nx + i] = float(val) if val is not None else 0.0
     time.sleep(0.1)
 
+  rows = [values[j * nx:(j + 1) * nx] for j in range(ny)]
+  values_north_first = [v for row in reversed(rows) for v in row]
+
   header = {
     "lo1": lons[0],
-    "la1": lats[0],
+    "la1": lats[-1],
     "dx": step,
     "dy": step,
     "nx": nx,
     "ny": ny,
   }
-  return header, values
+  north = header["la1"]
+  south = north - header["dy"] * (ny - 1)
+  print(f"Grid orientation la1={north}, dy={header['dy']}, ny={ny}, north={north}, south={south}")
+  assert north <= 90 and south >= -90, "Latitude bounds out of range"
+  return header, values_north_first
 
 
 def frange(start, stop, step):
